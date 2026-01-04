@@ -71,6 +71,7 @@ function generateDOT(clusters) {
         edge [fontname="Meiryo, sans-serif", fontsize=10, penwidth=1.5];
     `;
 
+    loopClasses = [];
     Object.keys(clusters).forEach((loopName, index) => {
         if (loopName !== "Default") {
             loopClasses[index] = escapeHtml(loopName);

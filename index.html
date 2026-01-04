@@ -3,14 +3,17 @@
 <head>
     <meta charset="utf-8">
     <title>Causal Looper</title>
+    <link rel="icon" type="image/png" href="./favicon.png">
     <link rel="stylesheet" href="./css/main.css">
 </head>
 <body>
-    <h1>Causal Looper</h1>
-    <navigation>
-        <button id="downloadSvgBtn">SVGをダウンロード</button>
-        <button id="downloadDotBtn">dotをダウンロード</button>
-    </navigation>
+    <header>
+        <h1>Causal Looper</h1>
+        <navigation>
+            <button id="downloadSvgBtn">💾SVG</button>
+            <button id="downloadDotBtn">💾dot</button>
+        </navigation>
+    </header>
     <div class="container">
         <div class="input-area">
             <h2 id="inputTitle">DSL入力</h2>
@@ -81,15 +84,11 @@ Cheap Imports -> Domestic Production (-) delay : Displacement of domestic indust
             document.getElementById('dslInput').placeholder = sampleTextJa;
             document.getElementById('inputTitle').textContent = 'DSL入力';
             document.getElementById('graphTitle').textContent = 'グラフ表示';
-            document.getElementById('downloadSvgBtn').textContent = 'SVGをダウンロード';
-            document.getElementById('downloadDotBtn').textContent = 'dotをダウンロード';
         } else {
             document.getElementById('dslInput').value = sampleTextEn;
             document.getElementById('dslInput').placeholder = sampleTextEn;
             document.getElementById('inputTitle').textContent = 'DSL Input';
             document.getElementById('graphTitle').textContent = 'Graph Display';
-            document.getElementById('downloadSvgBtn').textContent = 'Download SVG';
-            document.getElementById('downloadDotBtn').textContent = 'Download dot';
         }
 
         function addLoopCheckboxes(loopClasses) {

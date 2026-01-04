@@ -2,31 +2,136 @@ body {
     margin: 0;
     padding: 20px;
     font-family: sans-serif;
+    height: 100vh;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
 }
+
+h1{
+    margin: 10px 10px 10px 10px;
+    font-size: 18px;
+    background-image: url(../favicon.png);
+    background-size: 24px 24px;
+    background-repeat: no-repeat;
+    background-position: left center;
+    padding-left: 32px;
+}
+
+header {
+    margin: 0px;
+    display: flex;
+    align-items: center;
+    margin-bottom: 0px;
+    background-color: #c5d6fa;
+}
+
+h2{
+    margin-top: 0;
+    font-size: 16px;
+}
+
 .container {
     display: flex;
+    max-width: 100%;
     gap: 20px;
-    align-items: flex-start;
-}
-.input-area {
-    flex: 0 0 auto;
-    min-width: 400px;
-}
-.graph-area {
+    align-items: stretch;
     flex: 1;
-    min-width: 600px;
 }
+
+.input-area {
+    flex: 0 0 30%;
+    min-width: 300px;
+    display: flex;
+    flex-direction: column;
+}
+
 #dslInput {
     width: 100%;
-    max-width: 500px;
     font-family: monospace;
     font-size: 14px;
     padding: 10px;
     box-sizing: border-box;
 }
-#renderBtn {
-    margin-top: 10px;
-    padding: 10px 20px;
-    font-size: 16px;
+
+
+.graph-area {
+    flex: 1;
+    min-width: 300px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.graph-area h2 {
+    margin-top: 0;
+}
+
+#graph {
+    flex: 1;
+    align-items: center;
+    justify-content: left;
+}
+
+#graph svg {
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: calc(100vh - 10em);
+}
+
+navigation {
+    display: inline-flex;
+    margin-bottom: 0px;
+    gap: 10px;
+}
+
+navigation button {
+    padding: 8px 16px;
     cursor: pointer;
+}
+
+#selectLoop {
+    margin-bottom: 0px;
+}
+
+#selectLoop label {
+    display: inline-block;
+    margin-right: 15px;
+    cursor: pointer;
+}
+
+/* スマートフォン・タブレット用（縦並び） */
+@media (max-width: 1024px) {
+    body {
+        padding: 10px;
+    }
+    
+    .container {
+        flex-direction: column;
+    }
+    
+    .input-area,
+    .graph-area {
+        flex: none;
+        width: 100%;
+        min-width: 0;
+    }
+    
+    #dslInput {
+        font-size: 12px;
+        max-width: 100%;
+    }
+    
+    navigation button {
+        display: block;
+        width: 100%;
+        margin-bottom: 10px;
+        margin-right: 0;
+    }
+    
+    #selectLoop label {
+        display: block;
+        margin-bottom: 8px;
+    }
 }

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="utf-8">
+    <title>Causal Looper</title>
+    <link rel="stylesheet" href="./css/main.css">
+</head>
+<body>
+    <h1>Causal Looper</h1>
+    <div class="container">
+        <div class="input-area">
+            <h2 id="inputTitle">DSL入力</h2>
+            <textarea id="dslInput" rows="25"></textarea>
+            <br>
+            <button id="renderBtn">グラフを描画</button>
+        </div>
+        <div class="graph-area">
+            <h2 id="graphTitle">グラフ表示</h2>
+            <div id="graph"></div>
+        </div>
+    </div>
+
+    <script src="./js/d3.js"></script>
+    <script type="module" src="./js/wasm.js"></script>
+    <script src="./js/d3-graphviz.js"></script>
+    <script src="./js/looper-translator.js"></script>
+
+    <script>
+        // 言語設定
+        const isJapanese = navigator.language.startsWith('ja');
+        // サンプルテキスト
+        const sampleTextJa = `// 産油国のインフレの悪循環
+
+Loop:インフレの悪循環
+バラマキ支出 -> 財政赤字 (+) : 赤字の拡大
+財政赤字 -> 通貨発行 (+) : 紙幣の乱発
+通貨発行 -> インフレ (+) delay : 通貨価値の暴落
+インフレ -> バラマキ支出 (+) : 補填額の増加
+
+Loop: 産業破壊の悪循環
+インフレ -> 価格統制 (+) : 無理な価格固定
+価格統制 -> 民間企業の利益 (-) : 採算の悪化
+民間企業の利益 -> 国内生産力 (+) delay : 倒産・撤退
+国内生産力 -> モノ不足 (-) : 供給の停止
+モノ不足 -> インフレ (+) : 希少性による高騰
+
+Loop: 外部要因とオランダ病
+原油価格 -> 石油収入 (+) : 外貨の獲得
+石油収入 -> 財政赤字 (-) : 赤字の穴埋め
+石油収入 -> 安価な輸入品 (+) : 輸入の拡大
+安価な輸入品 -> 国内生産力 (-) delay : 国内産業の駆逐`;
+
+        const sampleTextEn = `// Vicious Cycle of Inflation in Oil-Producing Countries
+
+Loop: Inflation Vicious Cycle
+Excessive Spending -> Fiscal Deficit (+) : Expanding deficit
+Fiscal Deficit -> Currency Printing (+) : Printing money
+Currency Printing -> Inflation (+) delay : Currency devaluation
+Inflation -> Excessive Spending (+) : Increased compensation
+
+Loop: Industrial Destruction Cycle
+Inflation -> Price Control (+) : Forced price fixing
+Price Control -> Private Enterprise Profit (-) : Worsening profitability
+Private Enterprise Profit -> Domestic Production (+) delay : Bankruptcy and withdrawal
+Domestic Production -> Goods Shortage (-) : Supply shutdown
+Goods Shortage -> Inflation (+) : Price surge due to scarcity
+
+Loop: External Factors and Dutch Disease
+Oil Price -> Oil Revenue (+) : Foreign currency acquisition
+Oil Revenue -> Fiscal Deficit (-) : Filling budget gaps
+Oil Revenue -> Cheap Imports (+) : Expansion of imports
+Cheap Imports -> Domestic Production (-) delay : Displacement of domestic industry`;
+
+        // 言語に応じてテキストとUIを設定
+        if (isJapanese) {
+            document.getElementById('dslInput').value = sampleTextJa;
+            document.getElementById('inputTitle').textContent = 'DSL入力';
+            document.getElementById('graphTitle').textContent = 'グラフ表示';
+            document.getElementById('renderBtn').textContent = 'グラフを描画';
+        } else {
+            document.getElementById('dslInput').value = sampleTextEn;
+            document.getElementById('inputTitle').textContent = 'DSL Input';
+            document.getElementById('graphTitle').textContent = 'Graph Display';
+            document.getElementById('renderBtn').textContent = 'Render Graph';
+        }
+
+        function renderGraph() {
+            const text = document.getElementById('dslInput').value;
+            const clusters = parseDSL(text);
+            const dotSource = generateDOT(clusters);
+            try {
+                d3.select("#graph")
+                    .graphviz({
+                        useWorker: false,
+                        engine: 'dot',
+                        zoom: false
+                    })
+                    .renderDot(dotSource);
+            } catch (error) {
+                console.error(error);
+                document.getElementById("graph").innerText = "エラー: " + error.message;
+            }
+        }
+
+        // ボタンクリックで描画
+        document.getElementById('renderBtn').addEventListener('click', renderGraph);
+
+        // テキストエリアの変更で自動描画（debounce付き）
+        let debounceTimer;
+        document.getElementById('dslInput').addEventListener('input', function() {
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(renderGraph, 500); // 500ms待機後に描画
+        });
+        renderGraph();
+    </script>
+</body>
+</html>

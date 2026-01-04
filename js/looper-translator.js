@@ -65,7 +65,7 @@ function generateDOT(clusters) {
             // ラベルの作成 (極性 + 説明 + 遅延)
             let label = edge.polarity ? `(${edge.polarity})` : "";
             if (edge.explain) label += (label ? "\\n" : "") + edge.explain;
-            if (edge.hasDelay) label += "\n⌛";
+            if (edge.hasDelay) label += "\\n⌛";
 
             // スタイルの決定 (遅延なら点線)
             const style = edge.hasDelay ? "dashed" : "solid";

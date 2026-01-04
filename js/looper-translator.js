@@ -1,3 +1,20 @@
+let loopClasses = [];
+
+// loopClasses
+function getLoopClasses() {
+    return loopClasses;
+}
+
+function escapeHtml(text) {
+    const map = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+    };
+    return text.replace(/[&<>"]/g, function(m) { return map[m]; });
+}
+
 // --- 1. DSLパーサー (ここが核心部分) ---
 function parseDSL(text) {
     const lines = text.split('\n');
@@ -55,6 +72,9 @@ function generateDOT(clusters) {
     `;
 
     Object.keys(clusters).forEach((loopName, index) => {
+        if (loopName !== "Default") {
+            loopClasses[index] = escapeHtml(loopName);
+        }
 
         clusters[loopName].forEach(edge => {
             // 色の決定 (正:青, 逆:赤)
@@ -71,10 +91,11 @@ function generateDOT(clusters) {
             const style = edge.hasDelay ? "dashed" : "solid";
 
             dot += `    "${edge.from}" -> "${edge.to}" [
-                label="${label}", 
-                color="${color}", 
+                label="${label}",
+                color="${color}",
                 fontcolor="${labelColor}",
                 style="${style}"
+                class="edge${index}"
             ];\n`;
         });
 

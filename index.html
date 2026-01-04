@@ -19,6 +19,7 @@
         </div>
         <div class="graph-area">
             <h2 id="graphTitle">グラフ表示</h2>
+            <div id="selectLoop"></div>
             <div id="graph" style="margin-top: 10px;"></div>
         </div>
     </div>
@@ -91,10 +92,41 @@ Cheap Imports -> Domestic Production (-) delay : Displacement of domestic indust
             document.getElementById('downloadDotBtn').textContent = 'Download dot';
         }
 
+        function addLoopCheckboxes(loopClasses) {
+            const selectLoopDiv = document.getElementById('selectLoop');
+            selectLoopDiv.innerHTML = ''; // 既存の内容をクリア
+            for (let index = 0; index < loopClasses.length; index++) {
+                const label = document.createElement('label');
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.checked = true;
+                checkbox.addEventListener('change', function() {
+                    const edges = document.querySelectorAll(`.edge${index}`);
+                    console.log(`.edge${index} selected:`);
+                    console.log(edges);
+                    edges.forEach(edge => {
+                        edge.style.display = this.checked ? 'block' : 'none';
+                    });
+                });
+                label.appendChild(checkbox);
+                label.appendChild(document.createTextNode(loopClasses[index]));
+                selectLoopDiv.appendChild(label);
+            }
+        }
+
         function renderGraph() {
             const text = document.getElementById('dslInput').value;
             const clusters = parseDSL(text);
             const dotSource = generateDOT(clusters);
+            const loopClasses = getLoopClasses();
+
+            // 前回のloopClassesと比較
+            if (!window.previousLoopClasses ||
+                JSON.stringify(window.previousLoopClasses) !== JSON.stringify(loopClasses)) {
+                addLoopCheckboxes(loopClasses);
+                window.previousLoopClasses = [...loopClasses]; // コピーを保存
+            }
+
             try {
                 d3.select("#graph")
                     .graphviz({
@@ -150,6 +182,7 @@ Cheap Imports -> Domestic Production (-) delay : Displacement of domestic indust
             clearTimeout(debounceTimer);
             debounceTimer = setTimeout(renderGraph, 500); // 500ms待機後に描画
         });
+        // 初回描画
         renderGraph();
     </script>
 </body>

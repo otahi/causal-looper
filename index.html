@@ -7,16 +7,19 @@
 </head>
 <body>
     <h1>Causal Looper</h1>
+    <navigation>
+        <button id="downloadSvgBtn">SVGをダウンロード</button>
+        <button id="downloadDotBtn">dotをダウンロード</button>
+    </navigation>
     <div class="container">
         <div class="input-area">
             <h2 id="inputTitle">DSL入力</h2>
             <textarea id="dslInput" rows="25"></textarea>
             <br>
-            <button id="renderBtn">グラフを描画</button>
         </div>
         <div class="graph-area">
             <h2 id="graphTitle">グラフ表示</h2>
-            <div id="graph"></div>
+            <div id="graph" style="margin-top: 10px;"></div>
         </div>
     </div>
 
@@ -76,12 +79,14 @@ Cheap Imports -> Domestic Production (-) delay : Displacement of domestic indust
             document.getElementById('dslInput').value = sampleTextJa;
             document.getElementById('inputTitle').textContent = 'DSL入力';
             document.getElementById('graphTitle').textContent = 'グラフ表示';
-            document.getElementById('renderBtn').textContent = 'グラフを描画';
+            document.getElementById('downloadSvgBtn').textContent = 'SVGをダウンロード';
+            document.getElementById('downloadDotBtn').textContent = 'dotをダウンロード';
         } else {
             document.getElementById('dslInput').value = sampleTextEn;
             document.getElementById('inputTitle').textContent = 'DSL Input';
             document.getElementById('graphTitle').textContent = 'Graph Display';
-            document.getElementById('renderBtn').textContent = 'Render Graph';
+            document.getElementById('downloadSvgBtn').textContent = 'Download SVG';
+            document.getElementById('downloadDotBtn').textContent = 'Download dot';
         }
 
         function renderGraph() {
@@ -102,8 +107,40 @@ Cheap Imports -> Domestic Production (-) delay : Displacement of domestic indust
             }
         }
 
-        // ボタンクリックで描画
-        document.getElementById('renderBtn').addEventListener('click', renderGraph);
+        // SVGダウンロード機能
+        function downloadSVG() {
+            const svgElement = document.querySelector('#graph svg');
+            if (!svgElement) {
+                alert(isJapanese ? 'グラフが生成されていません' : 'Graph not generated');
+                return;
+            }
+            const svgData = new XMLSerializer().serializeToString(svgElement);
+            const blob = new Blob([svgData], { type: 'image/svg+xml' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'causal-loop-diagram.svg';
+            link.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // DOTファイルダウンロード機能
+        function downloadDOT() {
+            const text = document.getElementById('dslInput').value;
+            const clusters = parseDSL(text);
+            const dotSource = generateDOT(clusters);
+            const blob = new Blob([dotSource], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'causal-loop-diagram.dot';
+            link.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // ダウンロードボタン
+        document.getElementById('downloadSvgBtn').addEventListener('click', downloadSVG);
+        document.getElementById('downloadDotBtn').addEventListener('click', downloadDOT);
 
         // テキストエリアの変更で自動描画（debounce付き）
         let debounceTimer;

@@ -77,12 +77,14 @@ Cheap Imports -> Domestic Production (-) delay : Displacement of domestic indust
         // 言語に応じてテキストとUIを設定
         if (isJapanese) {
             document.getElementById('dslInput').value = sampleTextJa;
+            document.getElementById('dslInput').placeholder = sampleTextJa;
             document.getElementById('inputTitle').textContent = 'DSL入力';
             document.getElementById('graphTitle').textContent = 'グラフ表示';
             document.getElementById('downloadSvgBtn').textContent = 'SVGをダウンロード';
             document.getElementById('downloadDotBtn').textContent = 'dotをダウンロード';
         } else {
             document.getElementById('dslInput').value = sampleTextEn;
+            document.getElementById('dslInput').placeholder = sampleTextEn;
             document.getElementById('inputTitle').textContent = 'DSL Input';
             document.getElementById('graphTitle').textContent = 'Graph Display';
             document.getElementById('downloadSvgBtn').textContent = 'Download SVG';
